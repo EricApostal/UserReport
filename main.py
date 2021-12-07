@@ -1,4 +1,4 @@
-# -- Welcome to The Land of the Shitty code ™ -- #
+# -- Welcome to The Land of the Shitty code ™ -- # python3 -m pip install -U nextcord-ext-menus
 
 # -- IMPORTS -- #
 import nextcord
@@ -8,9 +8,6 @@ from config import config as config
 import sessionService
 from nextcord.ext import menus
 from nextcord.ext import commands
-
-
-
 
 # -- GLOBALS -- #
 global playerarray
@@ -22,21 +19,36 @@ con = sqlite3.connect('reportdb.db')
 cur = con.cursor()
 bot = commands.Bot(command_prefix='-')
 
+class colors():
+  def __init__(self, blue, red, green):
+    self.blue = blue
+    self.red = red
+    self.green = green
+  
+  blue, grey, gray, green, red = 1,2,2,3,4
+
+
+
+
+
 # -- Thus the code begins -- #
 
+async def menuGen(message, pg):
+  print('Generating menu', pg)
 
 class ReportUserMenu(menus.ButtonMenu):
     def __init__(self):
         super().__init__(disable_buttons_after=True)
 
-    async def send_initial_message(self, ctx, channel):
-        return await channel.send(f'Hello {ctx.author}', view=self)
+    
+    @nextcord.ui.button (style = colors.red, label="Report User")
+    async def on_report_user(self, button, interaction):
+        await interaction.response.send_message(content= 'Are you sure you would like to report a user?', ephemeral=True)
+        
 
-    @nextcord.ui.button(emoji="\N{THUMBS UP SIGN}")
-    async def on_thumbs_up(self, button, interaction):
-        await self.message.edit(content=f"Thanks {interaction.user}!")
-
-
+    @nextcord.ui.button (style = colors.blue, label="Lookup User")
+    async def on_lookup_user(self, button, interaction):
+        return
 
 
 @client.event
@@ -49,6 +61,7 @@ async def on_ready():
         print('Table already created')
 
     channel = client.get_channel(int(config.getReportChannel()))
+    await channel.purge()
     await channel.send('**Minecraft Account Scam Database**\n\nPress **Report User** or **Lookup User** to get started!', view=ReportUserMenu())
     
 
