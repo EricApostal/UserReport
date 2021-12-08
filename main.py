@@ -1,4 +1,4 @@
-# -- Welcome to The Land of the Shitty code ™ -- # python3 -m pip install -U nextcord-ext-menus
+# -- Welcome to The Land of the Shitty code ™ -- # 
 
 # -- IMPORTS -- #
 import nextcord
@@ -10,8 +10,7 @@ from nextcord.ext import menus
 from nextcord.ext import commands
 
 # -- GLOBALS -- #
-global playerarray
-playerarray = []
+
 
 # -- MISC -- #
 client = nextcord.Client()
@@ -29,22 +28,57 @@ class colors():
 
 
 
-
-
 # -- Thus the code begins -- #
 
-async def menuGen(message, pg):
-  print('Generating menu', pg)
+# async def menuGen(interaction, pg):
+#   print('Generating menu', pg)
+#   intmessage = await interaction.response.send_message(content= 'Are you sure you would like to report a user?', ephemeral=True, view=)
+
+
+#-- MENU LIBRARIES (sorta) --#
+# -- GENERIC CANCEL BUTTON --#
+class cancelbutton(menus.ButtonMenu):
+  @nextcord.ui.button (style = colors.green, label="Cancel")
+  async def on_cancel(self, button, interaction):
+      print('operation canceled')
+      return 
+      
+
+#-- MENU ONE --#
+class reportConfirm(menus.ButtonMenu): # just the first button menu
+  def __init__(self):
+      super().__init__(disable_buttons_after=True)
+
+  @nextcord.ui.button (style = colors.green, label="Yes!")
+  async def on_confirm_create_ticket(self, button, interaction):
+    await interaction.response.send_message(content= 'What is the **Minecraft Name** of the user you would like to report?', ephemeral=True, view=typeMinecraftName()) #HERE
+      
+      # channel = await interaction.create_text_channel('cool-channel') 
+      # await channel.edit(name=interaction.response.author.id)
+
+  @nextcord.ui.button (style = colors.red, label="Oops!, nvm")
+  async def on_deny_create_ticket(self, button, interaction):
+      return   
+
+#-- MENU TWO --#
+class typeMinecraftName(menus.ButtonMenu): # just the first button menu
+  def __init__(self):
+      super().__init__(disable_buttons_after=True)
+
+  @nextcord.ui.button (style = colors.red, label="Cancel")
+  async def on_cancel(self, button, interaction):
+      print(interaction)
+      return # THIS NEEDS TO DO SOMETHING THANKS
+
 
 class ReportUserMenu(menus.ButtonMenu):
     def __init__(self):
         super().__init__(disable_buttons_after=True)
 
-    
     @nextcord.ui.button (style = colors.red, label="Report User")
     async def on_report_user(self, button, interaction):
-        await interaction.response.send_message(content= 'Are you sure you would like to report a user?', ephemeral=True)
-        
+      await interaction.response.send_message(content= 'Are you sure you would like to report a user?', ephemeral=True, view=reportConfirm())
+
 
     @nextcord.ui.button (style = colors.blue, label="Lookup User")
     async def on_lookup_user(self, button, interaction):
@@ -58,7 +92,7 @@ async def on_ready():
     try:
         await sessionService.create_database()
     except:
-        print('Table already created')
+        print('[SQL] Table already created')
 
     channel = client.get_channel(int(config.getReportChannel()))
     await channel.purge()
