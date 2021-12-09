@@ -1,4 +1,5 @@
 # -- Welcome to The Land of the Shitty code ™ -- # 
+# todo: interaction.response.??? member maybe?
 
 # -- IMPORTS -- #
 import nextcord
@@ -52,6 +53,10 @@ class reportConfirm(menus.ButtonMenu): # just the first button menu
   @nextcord.ui.button (style = colors.green, label="Yes!")
   async def on_confirm_create_ticket(self, button, interaction):
     await interaction.response.send_message(content= 'What is the **Minecraft Name** of the user you would like to report?', ephemeral=True, view=typeMinecraftName()) #HERE
+    user_data = sessionService.cdata('none', 'none','none')
+    print(interaction.user)
+
+    sessionService.start_session(interaction.user, 'report', '1', user_data)
       
       # channel = await interaction.create_text_channel('cool-channel') 
       # await channel.edit(name=interaction.response.author.id)
@@ -84,11 +89,21 @@ class ReportUserMenu(menus.ButtonMenu):
     async def on_lookup_user(self, button, interaction):
         return
 
+@client.event
+async def on_message(message):
+  if message.author == client.user:
+    return
+
+  if sessionService.getsessiondata(str(message.author.id)):
+    userdata = sessionService.getsessiondata(str(message.author.id))
+    print(userdata)
+  else:
+    print('Message found from user not in array')
 
 @client.event
 async def on_ready():
     
-    print('[LOG] Bot has started!')
+    print('[BOT] Bot has started!')
     try:
         await sessionService.create_database()
     except:

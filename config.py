@@ -1,6 +1,5 @@
 options = [
-'ODU2NzEwNjM4NzAwOTg2Mzc5.YNE_9Q.lbu6ObaKOkXNd1PmITqJqBXxI9M', # token
-'857361620601929748', # report channel ID
+#token, channelid
 ]
 
 

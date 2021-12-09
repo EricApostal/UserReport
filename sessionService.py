@@ -32,7 +32,7 @@ def start_session(dcid, mode, step, data):
     print(f'user dcid =', user.dcid)
     print(playerarray[0].dcid)
 
-def get_session_data(dcid):
+def getsessiondata(dcid):
     print(f"in-context player array = {playerarray}")
     for i,k in enumerate(playerarray):
         if str(k.dcid) == str(dcid): #k[0] should be the dcid (discord id)
