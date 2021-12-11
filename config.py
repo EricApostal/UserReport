@@ -1,5 +1,5 @@
 options = [
-#token, channelid
+# token, report channel id
 ]
 
 

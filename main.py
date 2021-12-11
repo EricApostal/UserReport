@@ -54,9 +54,9 @@ class reportConfirm(menus.ButtonMenu): # just the first button menu
   async def on_confirm_create_ticket(self, button, interaction):
     await interaction.response.send_message(content= 'What is the **Minecraft Name** of the user you would like to report?', ephemeral=True, view=typeMinecraftName()) #HERE
     user_data = sessionService.cdata('none', 'none','none')
-    print(interaction.user)
+    print(interaction.user.id)
 
-    sessionService.start_session(interaction.user, 'report', '1', user_data)
+    await sessionService.start_session(str(interaction.user.id), 'report', '1', user_data)
       
       # channel = await interaction.create_text_channel('cool-channel') 
       # await channel.edit(name=interaction.response.author.id)
@@ -91,12 +91,13 @@ class ReportUserMenu(menus.ButtonMenu):
 
 @client.event
 async def on_message(message):
+  print('message sent')
   if message.author == client.user:
     return
 
-  if sessionService.getsessiondata(str(message.author.id)):
-    userdata = sessionService.getsessiondata(str(message.author.id))
-    print(userdata)
+  if await sessionService.getsessiondata(str(message.author.id)):
+    userdata = await sessionService.getsessiondata(str(message.author.id))
+    print(f'User found: {userdata}')
   else:
     print('Message found from user not in array')
 
